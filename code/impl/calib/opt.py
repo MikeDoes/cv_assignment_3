@@ -1,26 +1,25 @@
-from matplotlib.colors import PowerNorm
 import numpy as np
 import scipy.optimize as spo
-from code.impl.vis import Plot2DPoints
 
 from impl.util import MakeHomogeneous, HNormalize
 
 # Compute the reprojection error for a single correspondence
 def ReprojectionError(P, point3D, point2D):
-    # TODO
-    # Project the 3D point into the image and compare it to the keypoint.
-    # Make sure to properly normalize homogeneous coordinates.
-    point3D = HNormalize(MakeHomogeneous(point3D))
-    point2D = HNormalize(MakeHomogeneous(point2D))
-    
-    point3D = np.reshape(point3D, (3,1))
-    print(point3D.shape)
-    print(P.shape)
-    print(np.matmul(P, point3D))
-    error = point2D - np.matmul(P, point3D)
+  # TODO
+  # Project the 3D point into the image and compare it to the keypoint.
+  # Make sure to properly normalize homogeneous coordinates.
 
-    print(error)
-    return error
+  #H Normalize actually transforms back into Eucledian, nothing to do with normalisation
+
+  point2D = MakeHomogeneous(point2D)
+  point3D = MakeHomogeneous(point3D)
+  
+  error = np.matmul(P, point3D)
+
+  error = point2D - error
+  error = HNormalize(error)
+  
+  return error
 
 # Compute the residuals for all correspondences of the image
 def ImageResiduals(P, points2D, points3D):

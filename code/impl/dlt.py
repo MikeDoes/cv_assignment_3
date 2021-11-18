@@ -1,6 +1,4 @@
-from matplotlib.pyplot import axis
 import numpy as np
-from numpy.lib import row_stack
 
 def BuildProjectionConstraintMatrix(points2D, points3D):
 

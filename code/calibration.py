@@ -7,7 +7,6 @@ from impl.calib.io import ReadPoints2D, ReadPoints3D, ReadImageSize
 from impl.calib.opt import ImageResiduals, OptimizeProjectionMatrix
 
 
-
 def main():
   np.set_printoptions(precision=3)
   # Load the point correspondences
@@ -27,6 +26,7 @@ def main():
   ax2d = fig.add_subplot(122)
   Plot3DPoints(points3D, ax3d)
   Plot2DPoints(points2D, image_size, ax2d)
+  
   plt.show(block=False)
   
 
@@ -52,9 +52,11 @@ def main():
 
   print(f'Reprojection error after optimization: {np.linalg.norm(ImageResiduals(P_hat_opt, normalized_points2D, normalized_points3D))**2}')
 
+
   # TODO
   # Denormalize P
-  ## P = 
+  # WHICH ONE IS SUPPOSED TO BE INVERTED AND WHY IS NOTHING CHANGING?
+  P = np.matmul(np.matmul(T2D, P_hat_opt),T3D)
 
   # TODO
   # Decompose P
