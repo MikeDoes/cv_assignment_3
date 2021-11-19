@@ -35,7 +35,7 @@ def main():
   # We do this to avoid explosion and dimishing points
   
 
-  normalized_points2D, T2D = NormalizePoints2D(points2D, (19, 2))
+  normalized_points2D, T2D = NormalizePoints2D(points2D, points2D.shape)
   normalized_points3D, T3D = NormalizePoints3D(points3D)
   
   # TODO
@@ -55,8 +55,8 @@ def main():
 
   # TODO
   # Denormalize P
-  # WHICH ONE IS SUPPOSED TO BE INVERTED AND WHY IS NOTHING CHANGING?
-  P = np.matmul(np.matmul(T2D, P_hat_opt),T3D)
+
+  P = T2D.T @ P_hat_opt @ T3D
 
   # TODO
   # Decompose P

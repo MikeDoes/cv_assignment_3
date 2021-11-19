@@ -42,6 +42,6 @@ def UpdateReconstructionState(new_points3D, corrs, points3D, images):
   points3D = np.append(points3D, new_points3D, 0)
 
   for im_name in corrs:
-    images[im_name].Add3DCorrs(...)
+    images[im_name].Add3DCorrs(im_name, list(range(new_points3D.shape[0])))
 
   return points3D, images

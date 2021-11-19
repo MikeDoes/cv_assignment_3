@@ -8,7 +8,8 @@ from impl.sfm.corrs import Find2D3DCorrespondences, GetPairMatches, UpdateRecons
 from impl.sfm.geometry import DecomposeEssentialMatrix, EstimateEssentialMatrix, TriangulatePoints, TriangulateImage, EstimateImagePose
 from impl.sfm.image import Image
 from impl.sfm.io import ReadFeatureMatches, ReadKMatrix
-from impl.sfm.vis import PlotImages, PlotWithKeypoints, PlotImagePairMatches, PlotCameras
+from impl.sfm.vis import PlotImages, PlotWithKeypoints, PlotImagePairMatches, PlotCameras, PlotCamera
+from impl.util import MakeHomogeneous
 
 def main():
 
@@ -44,8 +45,8 @@ def main():
   # Visualize images and features
   # You can comment these lines once you verified that the images are loaded correctly
 
-  """ # Show the images
-  PlotImages(images)
+  # Show the images
+  """ PlotImages(images)
 
   # Show the keypoints
   for image_name in image_names:
@@ -74,11 +75,35 @@ def main():
   # For each possible relative pose, try to triangulate points.
   # We can assume that the correct solution is the one that gives the most points in front of both cameras
   # Be careful not to set the transformation in the wrong direction
+  
+  homog_points1 = MakeHomogeneous(e_im1.kps.T, 0)
+  homog_points2 = MakeHomogeneous(e_im2.kps.T, 0)
+  
+  number_points_behind = []
+  for i, (R, t) in enumerate(possible_relative_poses):
+    projected_points1 = (R @ homog_points1).T - t
+    projected_points2 = (R @ homog_points2).T - t
+    number_points_behind += [sum([np.count_nonzero(projected_points1[:,2] > 0), np.count_nonzero(projected_points2[:,2] > 0)])]
+  
+  indices = np.argsort(number_points_behind)
+  pose = possible_relative_poses[indices[0]]
 
+  """ 
+  fig = plt.figure()
+  ax3d = fig.add_subplot(111, projection='3d')
+  Plot3DPoints(projected_points1, ax3d)
+  PlotCamera(R, t, ax3d, 0.5)
+  plt.show() """
+    
+  
+
+  #Check for the most points in front of each camera
 
   # TODO
   # Set the image poses in the images (image.SetPose(...))
-
+  
+  e_im1.SetPose(np.eye(3), np.zeros(3))
+  e_im2.SetPose(*pose)
 
   # TODO Triangulate initial points
   points3D, im1_corrs, im2_corrs = TriangulatePoints(K, e_im1, e_im2, e_matches)

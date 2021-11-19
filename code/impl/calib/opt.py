@@ -9,14 +9,14 @@ def ReprojectionError(P, point3D, point2D):
   # Project the 3D point into the image and compare it to the keypoint.
   # Make sure to properly normalize homogeneous coordinates.
 
-  #H Normalize actually transforms back into Eucledian, nothing to do with normalisation
 
   point2D = MakeHomogeneous(point2D)
   point3D = MakeHomogeneous(point3D)
   
-  error = np.matmul(P, point3D)
-
-  error = point2D - error
+  projection = P @ point3D
+  
+  error = point2D - projection
+  
   error = HNormalize(error)
   
   return error
