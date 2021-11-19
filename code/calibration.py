@@ -49,14 +49,14 @@ def main():
   # TODO
   # Optimize based on reprojection error
   P_hat_opt = OptimizeProjectionMatrix(P_hat, normalized_points2D, normalized_points3D)
-
+  #P_hat_opt = P_hat
   print(f'Reprojection error after optimization: {np.linalg.norm(ImageResiduals(P_hat_opt, normalized_points2D, normalized_points3D))**2}')
 
 
   # TODO
   # Denormalize P
 
-  P = T2D.T @ P_hat_opt @ T3D
+  P = np.linalg.inv(T2D) @ P_hat_opt @ T3D
 
   # TODO
   # Decompose P

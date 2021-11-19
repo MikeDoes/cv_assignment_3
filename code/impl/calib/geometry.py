@@ -54,9 +54,6 @@ def EstimateProjectionMatrix(points2D, points3D):
   # TODO: Reshape the vector to a matrix (pay attention to the order)
 
   P = np.reshape(P_vec, (3,4))
-  """   P = np.vstack((P_vec[0:4].transpose(), P_vec[4:8].transpose()))
-  
-  P = np.vstack((P, P_vec[8:12].transpose())) """
   
   return P
 
@@ -64,12 +61,9 @@ def EstimateProjectionMatrix(points2D, points3D):
 def DecomposeP(P):
   # TODO
   # Decompose P into K, R, and t
-
   # P = K[R|t] = K[R | -RC] = [KR | -KRC]
   # We could decompose KR with a RQ decomposition since K is upper triangular and R is orthogonal
   # To switch this around we set M = KR -> M^(-1) = R^(-1) K^(-1) and can use the QR decomposition on M^(-1)
-  
-
   M = P[:, :3]
 
   M_inv = np.linalg.inv(M)
@@ -83,31 +77,30 @@ def DecomposeP(P):
 
   # TODO
   # It is possible that a sign was assigned to the wrong matrix during decomposition
-  # We need to make sure that det(R) = 1 to have a proper rotation
-  # We also want K to have a positive diagonal
-  determinant = np.linalg.det(R)
   
-  if int(determinant)== -1:
-    R = -R
+  
+  
 
 
   T = np.diag(np.sign(np.diag(K)))
   K = K @ T 
 
-
   R = np.linalg.inv(T) @ R
+
+  
 
   # TODO
   # Find the camera center C as the nullspace of P
-  
   _, _, vh = np.linalg.svd(P)
   C = np.reshape(vh[-1,:], (4,1))
-
- 
   C = HNormalize(C)
 
+  if np.linalg.det(R) < 0: R = -R
+  
   # TODO
   # Compute t from R and C
   t = -R @ C 
+
+  
 
   return K, R, t

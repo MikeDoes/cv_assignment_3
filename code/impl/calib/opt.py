@@ -10,14 +10,12 @@ def ReprojectionError(P, point3D, point2D):
   # Make sure to properly normalize homogeneous coordinates.
 
 
-  point2D = MakeHomogeneous(point2D)
+  
   point3D = MakeHomogeneous(point3D)
   
   projection = P @ point3D
   
-  error = point2D - projection
-  
-  error = HNormalize(error)
+  error = point2D - HNormalize(projection)
   
   return error
 

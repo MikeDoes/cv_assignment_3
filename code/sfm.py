@@ -102,8 +102,9 @@ def main():
   # TODO
   # Set the image poses in the images (image.SetPose(...))
   
-  e_im1.SetPose(np.eye(3), np.zeros(3))
-  e_im2.SetPose(*pose)
+  
+  e_im1.SetPose(*pose)
+  e_im2.SetPose(np.eye(3), np.zeros(3))
 
   # TODO Triangulate initial points
   points3D, im1_corrs, im2_corrs = TriangulatePoints(K, e_im1, e_im2, e_matches)
